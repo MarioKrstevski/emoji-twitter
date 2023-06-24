@@ -93,9 +93,14 @@ function PostView(props: PostWithUser) {
       />
       <div className="flex flex-col">
         <div className="flex text-slate-300">
-          <span>{"@" + author.emailAddresses[0]?.emailAddress}</span>{" "}
-          <span className="px-4">·</span>
-          <span>{dayjs(post.createdAt).fromNow()}</span>
+          <Link href={`/@${author.username}`}>
+            {/* <span>{"@" + author.emailAddresses[0]?.emailAddress} </span> */}
+            <span>{"@" + author.username} </span>
+          </Link>{" "}
+          <Link href={`/post/${post.id}`}>
+            <span className="px-4">·</span>
+            <span>{dayjs(post.createdAt).fromNow()}</span>
+          </Link>
         </div>
         <div className="text-xl">{post.content}</div>
       </div>
