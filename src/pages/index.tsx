@@ -7,6 +7,7 @@ import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import LoadingSpinner, { LoadingPage } from "@/components/loading";
 import { useRef } from "react";
+import toast from "react-hot-toast";
 
 dayjs.extend(relativeTime);
 function CreatePostWizzard() {
@@ -22,11 +23,19 @@ function CreatePostWizzard() {
       // in the background automatically
       void ctx.posts.getAll.invalidate();
     },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to post!");
+      }
+    },
   });
   if (!user) return null;
 
   return (
-    <div className="flex gap-3  ">
+    <div className="flex grow gap-3  ">
       <Image
         className="h-16 w-16 rounded-full"
         src={user.profileImageUrl}
@@ -48,6 +57,24 @@ function CreatePostWizzard() {
         }}
         disabled={isPosting}
       />
+      {!isPosting && (
+        <button
+          disabled={isPosting}
+          className="ml-auto"
+          onClick={() => {
+            mutate({
+              content: inputRef.current.value,
+            });
+          }}
+        >
+          Post
+        </button>
+      )}
+      {isPosting && (
+        <div className="flex items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      )}
     </div>
   );
 }

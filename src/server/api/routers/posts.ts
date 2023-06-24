@@ -53,7 +53,7 @@ export const postsRouter = createTRPCRouter({
     return posts.map((post) => {
       const author = users.find((user) => user.id === post.authorId);
 
-      if (!author || !author.emailAddresses) {
+      if (!author || !author.emailAddresses || !author.username) {
         throw new TRPCError({
           message: "Author for post not found",
           code: "INTERNAL_SERVER_ERROR",
@@ -65,6 +65,7 @@ export const postsRouter = createTRPCRouter({
         author: {
           ...author,
           emailAddresses: author.emailAddresses,
+          username: author.username,
         },
       };
     });
@@ -72,7 +73,7 @@ export const postsRouter = createTRPCRouter({
   create: privateProcedure
     .input(
       z.object({
-        content: z.string().emoji().min(1).max(280),
+        content: z.string().emoji("Only emojis are allowed!").min(1).max(280),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -83,7 +84,7 @@ export const postsRouter = createTRPCRouter({
       if (!success) {
         throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
       }
-      
+
       const post = await ctx.prisma.post.create({
         data: {
           authorId,
