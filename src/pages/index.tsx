@@ -6,11 +6,23 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import LoadingSpinner, { LoadingPage } from "@/components/loading";
+import { useRef } from "react";
 
 dayjs.extend(relativeTime);
 function CreatePostWizzard() {
   const { user } = useUser();
+  const inputRef = useRef<any>(null);
 
+  const ctx = api.useContext();
+
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+    onSuccess: () => {
+      inputRef.current.value = "";
+      // void says we don't care we want this to happen
+      // in the background automatically
+      void ctx.posts.getAll.invalidate();
+    },
+  });
   if (!user) return null;
 
   return (
@@ -26,6 +38,15 @@ function CreatePostWizzard() {
         className="grow bg-transparent outline-none"
         type="text"
         placeholder="Type some Emojis"
+        ref={inputRef}
+        onKeyUp={(e) => {
+          if (e.code === "Enter") {
+            mutate({
+              content: e.currentTarget.value,
+            });
+          }
+        }}
+        disabled={isPosting}
       />
     </div>
   );
