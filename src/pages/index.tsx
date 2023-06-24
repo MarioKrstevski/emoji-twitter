@@ -54,7 +54,7 @@ function CreatePostWizzard() {
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 function PostView(props: PostWithUser) {
   const { post, author } = props;
-  console.log(author.emailAddresses);
+  // console.log(author.emailAddresses);
   return (
     <div className="flex gap-3 border-b border-slate-400 p-4">
       <Image
