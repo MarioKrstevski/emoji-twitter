@@ -46,8 +46,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     throw new Error("no id");
   }
 
-  let post = await ssg.posts.getById.prefetch({ id });
-  console.log({ post });
+  await ssg.posts.getById.prefetch({ id });
   return {
     props: {
       trpcState: ssg.dehydrate(),

@@ -70,7 +70,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateSSGHelper();
-  console.log(ssg);
   const slug = context.params?.slug;
 
   if (typeof slug !== "string") {
@@ -78,8 +77,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
   const username = slug.replace("@", "");
 
-  let a = await ssg.profile.getUserByUsername.prefetch({ username });
-  console.log("iam a ", a);
+  await ssg.profile.getUserByUsername.prefetch({ username });
 
   return {
     props: {

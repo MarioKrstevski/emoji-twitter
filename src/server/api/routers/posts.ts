@@ -84,7 +84,6 @@ export const postsRouter = createTRPCRouter({
       }
 
       const modifiedPost = (await addUserDataToPosts([post]))[0];
-      console.log({ modifiedPost });
       // we allso add the email which is an array and we have to do this is suppose
       return JSON.parse(JSON.stringify(modifiedPost));
     }),
