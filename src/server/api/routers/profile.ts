@@ -22,6 +22,10 @@ export const profileRouter = createTRPCRouter({
           message: "User not found",
         });
       }
-      return filterUserForClient(user);
+      // console.log(user);
+      let filteredUser = filterUserForClient(user);
+      console.log(filteredUser);
+      // we do this because we have a Array for addresses
+      return JSON.parse(JSON.stringify(filteredUser));
     }),
 });

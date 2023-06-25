@@ -6,13 +6,10 @@ import type {
 } from "next";
 import { api } from "@/utils/api";
 import LoadingSpinner, { LoadingPage } from "@/components/loading";
-import { appRouter } from "@/server/api/root";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import { prisma } from "@/server/db";
-import superjson from "superjson";
 import PageLayout from "@/components/layout";
 import Image from "next/image";
 import { PostView } from "@/components/postview";
+import { generateSSGHelper } from "@/server/helpers/ssgHelper";
 
 type PageProps = InferGetServerSidePropsType<typeof getStaticProps>;
 
@@ -72,15 +69,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = createServerSideHelpers({
-    router: appRouter,
-    ctx: {
-      prisma,
-      userId: null,
-    },
-    transformer: superjson,
-  });
-
+  const ssg = generateSSGHelper();
+  console.log(ssg);
   const slug = context.params?.slug;
 
   if (typeof slug !== "string") {
@@ -88,7 +78,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
   const username = slug.replace("@", "");
 
-  ssg.profile.getUserByUsername.prefetch({ username });
+  let a = await ssg.profile.getUserByUsername.prefetch({ username });
+  console.log("iam a ", a);
 
   return {
     props: {
