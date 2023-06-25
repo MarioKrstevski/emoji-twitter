@@ -92,7 +92,7 @@ function Feed() {
     return <LoadingPage />;
   }
   if (!data) {
-    return <div>Something went wrong</div>;
+    return <div>Something went wrong, you need to sign in probably</div>;
   }
   return (
     <div className="flex flex-col">
