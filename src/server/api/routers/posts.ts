@@ -35,7 +35,7 @@ const addUserDataToPosts = async (posts: Post[]) => {
   return posts.map((post) => {
     const author = users.find((user) => user.id === post.authorId);
 
-    if (!author || !author.emailAddresses || !author.username) {
+    if (!author  || !author.username) {
       throw new TRPCError({
         message: "Author for post not found",
         code: "INTERNAL_SERVER_ERROR",
@@ -46,7 +46,6 @@ const addUserDataToPosts = async (posts: Post[]) => {
       post,
       author: {
         ...author,
-        emailAddresses: author.emailAddresses,
         username: author.username,
       },
     };
