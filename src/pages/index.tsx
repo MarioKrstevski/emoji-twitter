@@ -14,13 +14,15 @@ import { PostView } from "@/components/postview";
 dayjs.extend(relativeTime);
 function CreatePostWizzard() {
   const { user } = useUser();
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef<null | HTMLInputElement>(null);
 
   const ctx = api.useContext();
 
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
-      inputRef.current.value = "";
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
       // void says we don't care we want this to happen
       // in the background automatically
       void ctx.posts.getAll.invalidate();
@@ -64,9 +66,11 @@ function CreatePostWizzard() {
           disabled={isPosting}
           className="ml-auto"
           onClick={() => {
-            mutate({
-              content: inputRef.current.value,
-            });
+            if (inputRef.current) {
+              mutate({
+                content: inputRef.current?.value,
+              });
+            }
           }}
         >
           Post
