@@ -85,7 +85,7 @@ export const postsRouter = createTRPCRouter({
 
       const modifiedPost = (await addUserDataToPosts([post]))[0];
       // we allso add the email which is an array and we have to do this is suppose
-      return JSON.parse(JSON.stringify(modifiedPost));
+      return modifiedPost;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
