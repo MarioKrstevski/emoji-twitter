@@ -1,5 +1,5 @@
 export default function LoadingSpinner(props: { size?: number }) {
-  let size = props.size ?? 28;
+  const size = props.size ?? 28;
   return (
     <div role="status">
       <svg
