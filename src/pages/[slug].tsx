@@ -5,16 +5,35 @@ import type {
   NextPage,
 } from "next";
 import { api } from "@/utils/api";
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner, { LoadingPage } from "@/components/loading";
 import { appRouter } from "@/server/api/root";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { prisma } from "@/server/db";
 import superjson from "superjson";
 import PageLayout from "@/components/layout";
 import Image from "next/image";
+import { PostView } from "@/components/postview";
 
 type PageProps = InferGetServerSidePropsType<typeof getStaticProps>;
 
+function ProfileFeed(props: { userId: string }) {
+  const { data, isLoading } = api.posts.getProfileByUserId.useQuery({
+    userId: props.userId,
+  });
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+  if (!data || data.length === 0) {
+    return <div>user has no posts</div>;
+  }
+  return (
+    <div className="flex flex-col">
+      {data.map((fullPost) => (
+        <PostView {...fullPost} key={fullPost.post.id} />
+      ))}
+    </div>
+  );
+}
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { isLoading, data } = api.profile.getUserByUsername.useQuery({
     username,
@@ -45,7 +64,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         </div>
         <div className="h-[64px]"></div>
         <div className="p-4 text-2xl font-bold">@{data.username}</div>
-        <div className="border-slate w-full border-b"></div>
+        <div className="w-full border-b border-slate-400"></div>
+        <ProfileFeed userId={data.id} />
       </PageLayout>
     </>
   );
