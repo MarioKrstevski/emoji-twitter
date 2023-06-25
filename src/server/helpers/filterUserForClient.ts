@@ -5,6 +5,6 @@ export const filterUserForClient = (user: User) => {
     id: user.id,
     username: user.username,
     profileImageUrl: user.profileImageUrl,
-    emailAddresses: JSON.parse(JSON.stringify(user.emailAddresses)),
+    // emailAddresses: JSON.parse(JSON.stringify(user.emailAddresses)),
   };
 };
